@@ -1,7 +1,6 @@
 ---
 name: skillex
 description: Manage shared skills with the skillex CLI
-provider: codex
 ---
 
 # Skillex
