@@ -1,0 +1,10 @@
+{
+  "name": "plugin-architect",
+  "version": "0.1.0",
+  "hash": "sha256:ce477691a019a2213c6907ac689f25c7969c072a5f5d1a7a8aeda99b3bc3b172",
+  "dependencies": [],
+  "created": "2026-03-27T14:02:37.254679",
+  "updated": "2026-03-27T14:02:37.260022",
+  "author": "agent",
+  "description": "plugin-architect skill"
+}
