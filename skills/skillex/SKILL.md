@@ -65,7 +65,7 @@ skillex pull
 skillex push <skill-name> \
   --type docs \
   --summary "describe the change" \
-  --changes "specific thing that changed" \
+  --changes "what changed" \
   --reason "why the change was needed"
 ```
 
