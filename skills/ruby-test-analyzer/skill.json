@@ -1,0 +1,10 @@
+{
+  "name": "ruby-test-analyzer",
+  "version": "0.1.0",
+  "hash": "sha256:7364b35b9a608d0dc0df5f2fc908edc239bce505bda682385f36133b32840888",
+  "dependencies": [],
+  "created": "2026-03-27T14:02:56.988986",
+  "updated": "2026-03-27T14:02:56.993219",
+  "author": "agent",
+  "description": "ruby-test-analyzer skill"
+}
