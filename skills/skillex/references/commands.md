@@ -4,9 +4,9 @@
 
 ```bash
 skillex list
-skillex pull
-skillex pull <skill-name>
-skillex update <skill-name>
+skillex pull --agent claude
+skillex pull <skill-name> --agent claude
+skillex update <skill-name> --agent claude
 skillex delete <skill-name>
 ```
 
@@ -14,9 +14,10 @@ skillex delete <skill-name>
 
 ```bash
 skillex push <skill-name> \
+  --agent claude|codex|gemini \
   --type feat|fix|refactor|docs|test|chore \
   --summary "brief summary" \
-  --changes "specific change" \
+  --changes "what changed" \
   --reason "why it changed" \
   --bump patch|minor|major
 ```

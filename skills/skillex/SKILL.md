@@ -5,13 +5,16 @@ description: Manage shared skills with the skillex CLI
 
 # Skillex
 
-Use `skillex` to manage versioned skills for Codex from a central repository.
+Use `skillex` to manage versioned skills from a central repository shared across Claude, Codex, and Gemini.
 
 ## Locations
 
 - Central repository: `~/.skillex/skills/`
-- Codex skills: `/Users/jplatta/repos/skillex/.codex/skills`
-- Lockfile: `/Users/jplatta/repos/skillex/.codex/skills/.skillex.lock`
+- Provider installs:
+  - Claude: `.claude/skills`
+  - Codex: `.codex/skills`
+  - Gemini: `.gemini/skills`
+- Each provider keeps its own `.skillex.lock` file in its skills directory.
 
 ## Core Commands
 
@@ -21,22 +24,25 @@ List available skills:
 skillex list
 ```
 
-Install a skill into Codex:
+Install a skill for a specific agent:
 
 ```bash
-skillex pull <skill-name>
+skillex pull <skill-name> --agent claude
+skillex pull <skill-name> --agent codex
+skillex pull <skill-name> --agent gemini
 ```
 
 Update an installed skill:
 
 ```bash
-skillex update <skill-name>
+skillex update <skill-name> --agent claude
 ```
 
 Push changes back to the central repository:
 
 ```bash
 skillex push <skill-name> \
+  --agent claude \
   --type feat \
   --summary "brief description of the change"
 ```
@@ -54,15 +60,19 @@ skillex init gemini
 1. Pull before editing:
 
 ```bash
-skillex pull
+skillex pull --agent claude
 ```
 
-2. Edit the installed skill in `/Users/jplatta/repos/skillex/.codex/skills/<skill-name>/`.
+2. Edit the installed skill in the matching agent directory, for example:
+   - `.claude/skills/<skill-name>/`
+   - `.codex/skills/<skill-name>/`
+   - `.gemini/skills/<skill-name>/`
 
 3. Push with a structured commit:
 
 ```bash
 skillex push <skill-name> \
+  --agent claude \
   --type docs \
   --summary "describe the change" \
   --changes "what changed" \
@@ -87,7 +97,8 @@ skillex push <skill-name> \
 ## Notes
 
 - Skillex syncs the full `~/.skillex` repository, not individual skills.
+- Use `--agent` when pulling, pushing, or updating so the CLI knows which local skills directory to use.
 - If push is rejected because the repository is behind remote, run `skillex pull` and retry.
-- If a provider install drifts from the recorded hash, skillex will treat it as a local modification.
+- If an installed skill drifts from the recorded hash, skillex will treat it as a local modification.
 
 See `references/commands.md` for a compact command summary.
