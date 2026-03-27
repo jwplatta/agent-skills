@@ -1,0 +1,10 @@
+{
+  "name": "quant-connect",
+  "version": "0.1.0",
+  "hash": "sha256:19171cad2efc70438647cc6fe09d80a8beac35ffb3c39b0d3436fe04d414c88a",
+  "dependencies": [],
+  "created": "2026-03-27T14:02:50.396839",
+  "updated": "2026-03-27T14:02:50.402530",
+  "author": "agent",
+  "description": "quant-connect skill"
+}
