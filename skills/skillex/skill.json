@@ -1,0 +1,11 @@
+{
+  "name": "skillex",
+  "version": "0.1.1",
+  "provider": "codex",
+  "hash": "sha256:3d35f7021c8b39f4341e4e1890c29d47e3c15d6fdfff79fedb141ac34951b206",
+  "dependencies": [],
+  "created": "2026-03-27T12:49:40.374937",
+  "updated": "2026-03-27T12:49:57.313973",
+  "author": "system",
+  "description": "Skillex CLI usage instructions"
+}
