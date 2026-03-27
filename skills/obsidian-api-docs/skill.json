@@ -1,0 +1,10 @@
+{
+  "name": "obsidian-api-docs",
+  "version": "0.1.0",
+  "hash": "sha256:c079ebd79c7528217a9f70dd015d79cc1236d2afbd5b40c5e962524b69563349",
+  "dependencies": [],
+  "created": "2026-03-27T14:01:51.134905",
+  "updated": "2026-03-27T14:01:51.139048",
+  "author": "agent",
+  "description": "obsidian-api-docs skill"
+}
