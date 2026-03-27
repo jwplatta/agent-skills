@@ -1,0 +1,10 @@
+{
+  "name": "ruby-gem-scaffolder",
+  "version": "0.1.0",
+  "hash": "sha256:e9f72b4c53c5c8ec8263cbfff83a31bf55b993feaab441cfcac85d547eeff2c7",
+  "dependencies": [],
+  "created": "2026-03-27T13:59:10.795336",
+  "updated": "2026-03-27T13:59:10.803570",
+  "author": "agent",
+  "description": "ruby-gem-scaffolder skill"
+}
