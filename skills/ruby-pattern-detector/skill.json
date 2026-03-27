@@ -1,0 +1,10 @@
+{
+  "name": "ruby-pattern-detector",
+  "version": "0.1.0",
+  "hash": "sha256:69be455f86bb6e7ff2bd0ff969d71405b8ca67099ec75ea3621d0711aa511bd5",
+  "dependencies": [],
+  "created": "2026-03-27T14:02:54.872933",
+  "updated": "2026-03-27T14:02:54.894801",
+  "author": "agent",
+  "description": "ruby-pattern-detector skill"
+}
