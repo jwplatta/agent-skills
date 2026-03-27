@@ -1,0 +1,10 @@
+{
+  "name": "plugin-scaffolder",
+  "version": "0.1.0",
+  "hash": "sha256:5a59053b6442fa0ab0e45c66648c5409ddb44b67a2bc78016ac3a522a76a2dd4",
+  "dependencies": [],
+  "created": "2026-03-27T14:02:41.307496",
+  "updated": "2026-03-27T14:02:41.310711",
+  "author": "agent",
+  "description": "plugin-scaffolder skill"
+}
