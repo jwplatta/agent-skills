@@ -1,0 +1,10 @@
+{
+  "name": "ruby-bundler",
+  "version": "0.1.0",
+  "hash": "sha256:f25aecf08fa0ec07cfee5b054b0c0ee7af9b2a5c1de943554e00c1f748314abd",
+  "dependencies": [],
+  "created": "2026-03-27T13:54:58.379143",
+  "updated": "2026-03-27T13:54:58.386672",
+  "author": "agent",
+  "description": "ruby-bundler skill"
+}
