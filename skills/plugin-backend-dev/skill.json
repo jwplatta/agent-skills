@@ -1,0 +1,10 @@
+{
+  "name": "plugin-backend-dev",
+  "version": "0.1.0",
+  "hash": "sha256:51e4b79e5236438f33317ab379245b2f13b7fe0e99ec56849309449c875d9177",
+  "dependencies": [],
+  "created": "2026-03-27T14:02:39.216603",
+  "updated": "2026-03-27T14:02:39.219400",
+  "author": "agent",
+  "description": "plugin-backend-dev skill"
+}
