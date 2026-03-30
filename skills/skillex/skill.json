@@ -1,10 +1,10 @@
 {
   "name": "skillex",
-  "version": "0.1.4",
-  "hash": "sha256:b399444935e51639ed1d1d41bc4ed7cc70653e782072a14ff1d305fac921aa5f",
+  "version": "0.1.5",
+  "hash": "sha256:1727708572df3c82e1047230142a7cd98dfc2a03806bbf2062d8cf4235ecc77e",
   "dependencies": [],
   "created": "2026-03-27T12:49:40.374937",
-  "updated": "2026-03-27T13:05:14.532310",
+  "updated": "2026-03-30T10:57:26.332773",
   "author": "system",
   "description": "Skillex CLI usage instructions"
 }
