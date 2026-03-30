@@ -17,13 +17,14 @@ Enable fast, correct construction of QuantConnect LEAN algorithms in Python. Foc
 
 ## LEAN CLI Research Loop
 - The default loop is:
-  - `lean login` and `lean init` in an organization workspace.
-  - `lean project-create "<projectName>"` to scaffold a project.
+  - `lean login` and `lean init` in an organization workspace, then `cd` into the workspace directory that contains `lean.json`.
+  - `lean project-create --language python "<projectName>"` to scaffold a new Python project inside that LEAN workspace.
   - Edit the algorithm in the project files.
   - Commit the code changes for the test so the backtest maps to a stable `code_version`.
-  - Run `lean cloud backtest "<projectName>" --push --open`.
+  - Run `lean cloud push --project "<projectName>"` to push only that project. If the local project's `cloud-id` is missing or `null`, the push step creates the cloud project first.
+  - Run `lean cloud backtest "<projectName>" --open` after the push succeeds. `lean cloud backtest` takes the cloud project name or id, not an arbitrary local folder path.
   - Wait for the backtest to finish, review the returned statistics and full results, log the experiment, then tweak the algorithm and re-run until the metrics meet the target you care about.
-- Use `lean cloud pull` before local work when cloud changes may exist, and use `lean cloud push --project "<projectName>" --force` when you want the cloud copy updated.
+- Use `lean cloud pull --project "<projectName>"` before local work when cloud changes may exist, and use `lean cloud push --project "<projectName>" --force` when you want the cloud copy updated.
 - Run only one cloud backtest at a time. Do not launch the next run until the current one has completed and been logged.
 
 ## Research Logging
@@ -33,6 +34,10 @@ Enable fast, correct construction of QuantConnect LEAN algorithms in Python. Foc
 - Generate ids with `scripts/generate_research_id.py` so `hypothesis_id` and `experiment_id` values are sequential and deterministic.
 - Create or update the hypothesis entry before running a meaningful new test.
 - After each completed backtest, append an experiment entry before launching the next backtest.
+- Store downloaded QuantConnect backtest result payloads in `research_log/results/` so they live alongside the hypothesis and experiment logs.
+- Parse saved QuantConnect results payloads with:
+  - `python .codex/skills/quant-connect/scripts/extract_backtest_metrics.py <results-json>`
+  - The script returns a compact JSON object with run metadata, frontmatter-ready `quantconnect_results`, and normalized numeric fields in `parsed_metrics`.
 - If a completed experiment changes your thinking, update the existing hypothesis entry or create a new hypothesis entry with its own `hypothesis_id`.
 - Use one file per hypothesis and one file per experiment so each entry is easy to read, diff, and load.
 - Use the id itself as the filename.
@@ -110,6 +115,7 @@ class MyAlgo(QCAlgorithm):
 - Read `references/CLI.md` for a concise LEAN CLI workflow covering project creation, research, sync, backtests, and result review.
 - Use `scripts/bootstrap_research_log.py` to initialize the research log directories.
 - Use `scripts/generate_research_id.py` for deterministic hypothesis and experiment ids.
+- Use `scripts/extract_backtest_metrics.py` to pull the key QuantConnect metrics from a saved results JSON file.
 
 ## Examples
 - `examples/basic_buy_and_hold.py`: minimal single-asset QCAlgorithm skeleton.
