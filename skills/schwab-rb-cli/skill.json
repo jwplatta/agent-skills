@@ -1,0 +1,10 @@
+{
+  "name": "schwab-rb-cli",
+  "version": "0.1.0",
+  "hash": "sha256:71755bd80872d5a9dbe2868abd4694f52a0b32b16cf597df5288c1f517a4b86f",
+  "dependencies": [],
+  "created": "2026-04-06T10:37:12.187915",
+  "updated": "2026-04-06T10:37:12.192310",
+  "author": "agent",
+  "description": "schwab-rb-cli skill"
+}
