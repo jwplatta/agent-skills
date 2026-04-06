@@ -22,7 +22,7 @@ Enable fast, correct construction of QuantConnect LEAN algorithms in Python. Foc
   - Edit the algorithm in the project files.
   - Commit the code changes for the test so the backtest maps to a stable `code_version`.
   - Run `lean cloud push --project "<projectName>"` to push only that project. If the local project's `cloud-id` is missing or `null`, the push step creates the cloud project first.
-  - Run `lean cloud backtest "<projectName>" --open` after the push succeeds. `lean cloud backtest` takes the cloud project name or id, not an arbitrary local folder path.
+  - Run `lean cloud backtest "<projectName>" --name "<runName>" --open` after the push succeeds when you want a human-readable run label in QuantConnect. `lean cloud backtest` takes the cloud project name or id, not an arbitrary local folder path.
   - Wait for the backtest to finish, review the returned statistics and full results, log the experiment, then tweak the algorithm and re-run until the metrics meet the target you care about.
 - Use `lean cloud pull --project "<projectName>"` before local work when cloud changes may exist, and use `lean cloud push --project "<projectName>" --force` when you want the cloud copy updated.
 - Run only one cloud backtest at a time. Do not launch the next run until the current one has completed and been logged.
