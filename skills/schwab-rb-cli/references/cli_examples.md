@@ -5,6 +5,7 @@
 ```bash
 skills/schwab-rb-cli/scripts/run_schwab_rb.sh help
 skills/schwab-rb-cli/scripts/run_schwab_rb.sh help price-history
+skills/schwab-rb-cli/scripts/run_schwab_rb.sh help sample
 ```
 
 ## Authentication
@@ -47,6 +48,25 @@ skills/schwab-rb-cli/scripts/run_schwab_rb.sh price-history \
   --symbol SPY \
   --start-date 2026-03-01 \
   --dir /tmp/schwab_rb_data
+```
+
+## Option-chain samples
+
+Default CSV output:
+
+```bash
+skills/schwab-rb-cli/scripts/run_schwab_rb.sh sample --symbol SPX --expiration-date 2026-04-17
+```
+
+Filter by root and write JSON to a custom directory:
+
+```bash
+skills/schwab-rb-cli/scripts/run_schwab_rb.sh sample \
+  --symbol SPX \
+  --root SPXW \
+  --expiration-date 2026-04-17 \
+  --format json \
+  --dir /tmp/schwab_rb_options
 ```
 
 ## Installation troubleshooting

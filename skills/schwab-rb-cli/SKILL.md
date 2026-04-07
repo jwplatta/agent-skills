@@ -1,6 +1,6 @@
 ---
 name: schwab-rb-cli
-description: Use the installed schwab_rb CLI for authentication and price history downloads. Activate when a user wants to run the schwab_rb command, log in to Schwab, fetch market data, troubleshoot CLI installation or environment variables, or save price history from the command line.
+description: Use the installed schwab_rb CLI for authentication, option-chain samples, and price history downloads. Activate when a user wants to run the schwab_rb command, log in to Schwab, fetch market data, troubleshoot CLI installation or environment variables, or save CLI output from the command line.
 ---
 
 # Schwab RB CLI Skill
@@ -9,8 +9,8 @@ Use this skill when the task should be completed through the installed `schwab_r
 
 ## When to use
 
-- The user wants to run `schwab_rb help`, `schwab_rb login`, or `schwab_rb price-history`
-- The user wants to download price history data to JSON or CSV
+- The user wants to run `schwab_rb help`, `schwab_rb login`, `schwab_rb sample`, or `schwab_rb price-history`
+- The user wants to download an option-chain sample or price history data to JSON or CSV
 - The user needs help with CLI installation, `asdf` shims, or missing `SCHWAB_*` environment variables
 - The user wants the agent to verify the CLI works on the local machine
 
@@ -39,7 +39,13 @@ The wrapper only attempts to execute the globally installed `schwab_rb` command 
 skills/schwab-rb-cli/scripts/run_schwab_rb.sh login
 ```
 
-5. For data downloads, run:
+5. For option-chain samples, run:
+
+```bash
+skills/schwab-rb-cli/scripts/run_schwab_rb.sh sample --symbol SPX --expiration-date 2026-04-17
+```
+
+6. For price history downloads, run:
 
 ```bash
 skills/schwab-rb-cli/scripts/run_schwab_rb.sh price-history --symbol AAPL --start-date 2026-03-01
