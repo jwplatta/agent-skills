@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tickrake CLI"
+  short_description: "Run Tickrake for candles, options, jobs, and logs"
+  default_prompt: "Use $tickrake-cli to operate the globally installed tickrake CLI."
