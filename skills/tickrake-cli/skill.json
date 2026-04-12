@@ -1,10 +1,10 @@
 {
   "name": "tickrake-cli",
-  "version": "0.1.1",
-  "hash": "sha256:19d910493268deb82cfc348f221cf2160d2097dda62e369950e40756e245d111",
+  "version": "0.1.2",
+  "hash": "sha256:c06349cc284852e16dfc776b8b14f6b0bd373f30ed172b4324a81be89eb43fdc",
   "dependencies": [],
   "created": "2026-04-10T12:30:00",
-  "updated": "2026-04-10T12:26:13.251826",
+  "updated": "2026-04-12T14:41:12.305523",
   "author": "Joseph Platta",
   "description": "tickrake-cli skill"
 }
