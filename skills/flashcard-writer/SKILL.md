@@ -66,7 +66,9 @@ START
 Basic
 What is the OLS formula for the slope coefficient $b$?
 Back:
-$$b = \rho_{x,y} \frac{\sigma_y}{\sigma_x} = \frac{Cov(x,y)}{Var(x)}$$
+$$
+b = \rho_{x,y} \frac{\sigma_y}{\sigma_x} = \frac{Cov(x,y)}{Var(x)}
+$$
 Tags: regression
 END
 ```
@@ -84,7 +86,13 @@ Cards should be slightly effortful to answer — not trivially easy, not impossi
 
 Always use LaTeX for math. Surround all math with dollar signs:
 - Inline: `$x^2 + y^2 = r^2$`
-- Display (own line): `$$E(x) = \sum_{i=1}^n P(x_i) \cdot x_i$$`
+- Display block: contents must be on their own line between `$$` delimiters:
+  ```
+  $$
+  E(x) = \sum_{i=1}^n P(x_i) \cdot x_i
+  $$
+  ```
+  Never put display math on the same line as the `$$`: `$$E(x) = ...$$` is wrong.
 
 Never write math as plain text (e.g. never write `E(x) = sum P(xi) * xi`).
 
@@ -98,7 +106,9 @@ START
 Basic
 What is the variance formula?
 Back:
-$$Var(x) = E(x^2) - E(x)^2$$
+$$
+Var(x) = E(x^2) - E(x)^2
+$$
 Tags: statistics
 END
 ```
