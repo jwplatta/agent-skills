@@ -1,10 +1,10 @@
 {
   "name": "flashcard-writer",
-  "version": "0.1.0",
-  "hash": "sha256:deec8e5ccf3722e3942c3902715babaad529478708efcf4e713dda6ad4158b8b",
+  "version": "0.1.1",
+  "hash": "sha256:e383c61f7d4312b25e94ab35cd34d77ecbbfec9666ab39933545e836187552e5",
   "dependencies": [],
   "created": "2026-05-05T08:46:03.598456",
-  "updated": "2026-05-05T08:46:03.603794",
+  "updated": "2026-05-05T08:51:54.249498",
   "author": "agent",
   "description": "flashcard-writer skill"
 }
