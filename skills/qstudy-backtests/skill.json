@@ -1,0 +1,10 @@
+{
+  "name": "qstudy-backtests",
+  "version": "0.1.1",
+  "hash": "sha256:99737c2bd2dfd24a3e20bd8987cea2cd72c011c509f912fbdb35100daac2bbc2",
+  "dependencies": [],
+  "created": "2026-05-08T00:00:00",
+  "updated": "2026-05-08T17:34:34.220068",
+  "author": "agent",
+  "description": "Write cross-sectional equity backtests using the qstudy library"
+}
