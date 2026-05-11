@@ -78,23 +78,26 @@ os.makedirs(os.path.expanduser("~/.qstudy/<study-name>"), exist_ok=True)
 ### Basic shape
 
 ```python
+def my_signal(**cache):
+    # cache["residual_returns"] if residualize_returns() was called, else cache["returns"]
+    return -cache["residual_returns"].rolling(5).mean().shift(1)
+
 study = (
     Study(universe=universe_data, benchmark=benchmark_data, factors=factors_data)
     # [optional] strip factor exposure before signal
     .residualize_returns()
-    # signal source — exactly one
-    .mean_reversion(window=20)     # or .momentum(window=60) or .base_signal(fn)
+    # signal source — always .base_signal(fn); fn(**cache) -> pd.DataFrame
+    .base_signal(my_signal)
     # filters — zero or more, applied in order
-    .add_liquidity_filter(top_n=250)
-    .add_vol_filter(vol_window=40, quantile=0.75, keep="low")
+    .add_vol_filter(vol_window=40, quantile=0.75)
     .add_volume_zscore_filter(window=30, min_zscore_quantile=0.8)
     .add_momentum_context_filter(window=60, max_abs_quantile=0.7)
+    .add_tradeable_constraint(qs.liquidity(top_n=250, window=60))
     # position builder — exactly one
-    .build_long_short(n_long=25, n_short=25)   # or .build_long_only(n=50)
-    # position scalers — zero or more
-    .scale_returns(my_regime_scaler)
-    # optional weighting (default = equal dollar)
-    .weight_equal_vol(vol_window=60)
+    .build_positions(my_position_fn)
+    .rebalance(every=1)
+    # risk scalers — zero or more
+    .scale_risk(my_regime_scaler)
     .run()
 )
 
@@ -112,16 +115,6 @@ factors_data   = qs.download(["SPY", "XLK"], "2015-01-01", "2023-12-31")
 
 Download **once** at the top of each script, then reuse across iterations in the same session.
 
-### Built-in signal methods
-
-| Method | Signal formula |
-|--------|---------------|
-| `.mean_reversion(window=20)` | `-residuals.rolling(window).mean()` — recent losers rank highest |
-| `.momentum(window=60)` | `residuals.rolling(window).mean()` — recent winners rank highest |
-| `.base_signal(fn)` | `fn(**cache) -> pd.DataFrame` — fully custom |
-
-When `.residualize_returns()` is called, `_active_returns` is set to `residual_returns`; otherwise it's `returns`. Built-in methods use `_active_returns` automatically.
-
 ### Built-in filters
 
 | Method | What it does |
@@ -131,7 +124,7 @@ When `.residualize_returns()` is called, `_active_returns` is set to `residual_r
 | `.add_volume_zscore_filter(window=30, min_zscore_quantile=0.8)` | Remove assets with below-average recent volume |
 | `.add_momentum_context_filter(window=60, max_abs_quantile=0.7)` | Remove strongly trending assets (for mean reversion) |
 
-When `residualize_returns()` was called, `add_vol_filter` and `add_momentum_context_filter` automatically use `residual_returns` instead of raw returns.
+When `residualize_returns()` was called, `add_vol_filter` and `add_momentum_context_filter` use `residual_returns` instead of raw returns.
 
 ### Custom signal filter
 
@@ -420,83 +413,23 @@ if __name__ == "__main__":
     emit_metrics(study)
 ```
 
-### `run_all.py` template
+### `run_all.py`
 
-```python
-import importlib.util
-import json
-from pathlib import Path
-
-import pandas as pd
-
-HERE     = Path(__file__).resolve().parent
-CSV_PATH = HERE / "results.csv"
-
-PREFERRED_COLS = [
-    "sharpe", "ann_return", "ann_vol", "max_drawdown",
-    "max_drawdown_duration", "avg_daily_turnover",
-    "benchmark_corr", "information_ratio",
-]
-
-
-def load_study(version):
-    path = HERE / f"{version}.py"
-    spec = importlib.util.spec_from_file_location(version, path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module.study
-
-
-def main():
-    versions = ["v0", *[f"v{i}" for i in range(1, N + 1)]]  # set N to your last version
-    rows = []
-    for version in versions:
-        metrics = load_study(version).metrics_dict()
-        metrics["version"] = version
-        rows.append(metrics)
-
-    df = pd.DataFrame(rows).set_index("version")
-    df.transpose().to_csv(CSV_PATH)
-
-    existing = [c for c in PREFERRED_COLS if c in df.columns]
-    print(df[existing].sort_index().round(4).to_string())
-    print(f"\nWrote: {CSV_PATH}")
-    print("\nJSON:")
-    print(json.dumps(rows, default=str, indent=2))
-
-
-if __name__ == "__main__":
-    main()
-```
+See [`examples/run_all.py`](examples/run_all.py) for the full template. Copy it into your experiment directory and adjust the version range to match your last version number.
 
 Run with: `uv run python experiments/<study-name>/run_all.py`
 
-### `LOG.md` convention
+### `LOG.md`
 
-```markdown
-# <Study Title>
+See [`examples/LOG.md`](examples/LOG.md) for a real example log from a momentum experiment. The expected structure per version is:
 
-Brief description of the study goal and the metric being optimized.
-
-## Baseline
-
-### `v0`
-- Setup: universe, factors, signal, filters, scalers used
-- Result: Sharpe `X.XX`, max drawdown `-X.XX%`, duration `NNN`, turnover `X.XX`
-
-## Iterations
-
-### `v1`
-- Change: <one-line description of what was changed vs. v0>
-- Result: <key metric deltas>; keep / reject
-
-### `v2`
-...
-
-## Summary
-- What worked, what didn't, and why
-- Final recommended version and its metrics
 ```
+### `vN`
+- Change: <one-line description of what changed vs. prior version>
+- Result: Sharpe `X.XX`, max drawdown `-X.XX%`, duration `NNN`; keep / reject
+```
+
+End with a `## Summary` section noting what worked, what didn't, and the final recommended version.
 
 ---
 
