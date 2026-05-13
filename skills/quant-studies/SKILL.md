@@ -7,7 +7,9 @@ description: Design and iterate on cross-sectional equity backtests using the qs
 
 ## Overview
 
-`qstudy` is a library for doing unconstrainted backtesting. The `Study` class provides a chainable pipeline that handles data alignment, signal generation, filtering, position construction, PnL computation, and metrics — the researcher writes only the signal logic and any custom filters.
+`qstudy` is a library for doing unconstrainted backtesting. The `Study` class provides a chainable pipeline that handles data alignment, signal generation, filtering, position construction, PnL computation, and metrics.
+
+The preferred workflow is now the first-party `qstudy` CLI. Use the CLI to create and manage experiment folders, then implement study logic inside the generated scaffold. Do not default to ad hoc `common.py` / `run_all.py` structures when the CLI already provides the correct experiment layout.
 
 ```python
 import qstudy as qs
@@ -19,9 +21,17 @@ from qstudy.constants import SP500
 
 ## Workflow: Starting a New Study
 
-When the user invokes this skill, **ask the following questions before writing any code**. Do not guess — wait for answers.
+When the user invokes this skill to start or iterate on a study, prefer the CLI workflow:
 
-### Required questions (ask all at once)
+1. Resolve the studies root from `.qstudy.toml` or the current working directory.
+2. Create the experiment with `uv run qstudy create <name>` if it does not exist yet.
+3. Edit the generated `shared.py` and `v0.py` or add `v1.py`, `v2.py`, and so on.
+4. Run the experiment with `python run.py` from inside the experiment directory.
+5. Review results with `uv run qstudy show-results <name>`.
+
+Ask the following questions before choosing parameters or writing study logic. Ask them all at once.
+
+### Required questions
 
 1. **Universe** — what assets to trade?
    - Common answers: `SP500`, `SECTOR_ETFS`, a custom list of tickers
@@ -40,36 +50,45 @@ When the user invokes this skill, **ask the following questions before writing a
    - Default if unspecified: `"2015-01-01"` to `"2023-12-31"`
 
 5. **Iterations** — how many versions should the agent attempt to improve?
-   - Each iteration writes a new script and prints metrics
+   - Each iteration should be a new `vN.py` module in the CLI-managed experiment directory
    - The agent improves signal, filters, or position sizing based on prior results
    - Suggested range: 2–5; more is fine but slower
 
-6. **Output mode** — single exploratory study or multi-version experiment?
-   - **Single study**: one-off script, output to `~/.qstudy/<study-name>/`
-   - **Experiment**: `common.py` + numbered `v0.py`–`vN.py` + `run_all.py` + `LOG.md` under `experiments/<study-name>/`
-   - Default if unspecified: ask the user — do not guess
-   - Use the experiment structure whenever the goal is systematic iteration with a CSV results table
+6. **Experiment name** — what should the CLI create or reuse?
+   - This becomes the folder name passed to `qstudy create <name>`
+   - Use a short kebab-case name when possible
 
-### Output location
+7. **Studies root** — should the default config be used, or should `.qstudy.toml` point somewhere specific?
+   - If the user does not care, use the resolved default
+   - If they want repo-local experiments, prefer a local `.qstudy.toml` with `studies_dir = "experiments"`
 
-**Single study** — each iteration is a new file under `~/.qstudy/<study-name>/`:
+### CLI-first experiment layout
+
+`qstudy create <name>` generates:
 
 ```
-~/.qstudy/
-  residual_mr_sp500/
-    v1_baseline.py
-    v2_vol_filter.py
-    v3_corr_regime.py
-    ...
+<studies_root>/<study-name>/
+  shared.py
+  v0.py
+  run.py
+  results.json
+  results.csv
+  log.md
+  readme.md
 ```
 
-Create the folder before writing the first script:
-```python
-import os
-os.makedirs(os.path.expanduser("~/.qstudy/<study-name>"), exist_ok=True)
+Use this layout as the source of truth. Do not replace it with `common.py` or `run_all.py` unless the user explicitly asks for a nonstandard structure.
+
+### Command sequence
+
+```bash
+uv run qstudy create <study-name>
+cd <study-name>
+python run.py
+uv run qstudy show-results <study-name>
 ```
 
-**Experiment** — use the structure described in [Experiment Structure](#experiment-structure) below. Files live under `experiments/<study-name>/` in the repo.
+If the studies root is repo-local, the final command should be run from the directory containing the relevant `.qstudy.toml`.
 
 ---
 
@@ -113,7 +132,7 @@ benchmark_data = qs.download(["SPY"],         "2015-01-01", "2023-12-31")
 factors_data   = qs.download(["SPY", "XLK"], "2015-01-01", "2023-12-31")
 ```
 
-Download **once** at the top of each script, then reuse across iterations in the same session.
+For CLI-managed experiments, put shared download helpers in `shared.py` and version-specific study logic in `vN.py`.
 
 ### Built-in filters
 
@@ -188,30 +207,31 @@ After each iteration, note changes in Sharpe, ann_return, max_drawdown, and info
 
 ---
 
-## Experiment Structure
+## CLI Experiment Structure
 
-Use this structure whenever you are running a systematic, multi-version experiment where results should be aggregated and compared in a CSV table.
+Use the CLI-generated structure whenever you are running a systematic, multi-version experiment where results should be aggregated and compared in a results table.
 
 ### Directory layout
 
 ```
-experiments/<study-name>/
-  common.py       # shared loaders, signal builders, scalers, build_study()
-  v0.py           # baseline — all logic inline, no imports from common
-  v1.py           # first iteration — delegates to build_study() with one change
+<studies_root>/<study-name>/
+  shared.py       # shared loaders, constants, and helper functions
+  v0.py           # baseline study with run_study() -> dict
+  v1.py           # first iteration
   ...
   vN.py           # Nth iteration
-  run_all.py      # loads every version, aggregates metrics → results.csv
-  LOG.md          # per-version rationale and outcome notes
-  results.csv     # generated by run_all.py — do not hand-edit
+  run.py          # discovers all top-level v*.py files and writes results.json/results.csv
+  log.md          # per-version rationale and outcome notes
+  readme.md       # local experiment notes
+  results.json    # generated by run.py — source of truth for results
+  results.csv     # generated by run.py — flat table
 ```
 
-### `common.py` template
+### `shared.py`
 
-`common.py` holds everything that every version script reuses: data loaders, reusable signal/filter/scaler functions, the `build_study()` factory, and `emit_metrics()`.
+`shared.py` should hold everything every version script reuses: data loaders, constants, and helper signal/filter/scaler functions.
 
 ```python
-import json
 from functools import cache
 
 import numpy as np
@@ -222,10 +242,11 @@ from qstudy import Study
 from qstudy.constants import SP500
 
 START_DATE = "2015-01-01"
-END_DATE   = "2023-12-31"
+END_DATE = "2023-12-31"
+BENCHMARK_TICKER = "SPY"
+N_LONG = 25
+N_SHORT = 25
 
-
-# ── Data loaders (cached so each version reuses the same objects) ────────────
 
 @cache
 def load_universe():
@@ -233,195 +254,95 @@ def load_universe():
 
 @cache
 def load_benchmark():
-    return qs.download("SPY", START_DATE, END_DATE)
+    return qs.download([BENCHMARK_TICKER], START_DATE, END_DATE)
 
 @cache
 def load_baseline_factors():
     return qs.download(["SPY", "XLK"], START_DATE, END_DATE)
 
 
-# ── Reusable signal / scaler / filter functions ──────────────────────────────
+def mean_reversion_signal(window=5):
+    def signal(**cache):
+        returns = cache["_active_returns"]
+        return -returns.rolling(window).mean()
 
-def demean_signal(signal, **cache):
-    return signal.sub(signal.mean(axis=1), axis=0)
+    signal.__name__ = f"mean_reversion_signal_{window}"
+    return signal
+```
 
-def proportional_positions(signal, **cache):
-    signal_z = signal.sub(signal.mean(axis=1), axis=0)
-    signal_z = signal_z.div(signal_z.std(axis=1), axis=0).clip(-3, 3)
-    signal_z = signal_z.sub(signal_z.mean(axis=1), axis=0)
-    gross = signal_z.abs().sum(axis=1).replace(0.0, np.nan)
-    return signal_z.div(gross, axis=0)
+### `v0.py`
 
-def equity_curve_regime_scale(lookback=20, defensive_scale=0.25):
-    def scaler(positions, **cache):
-        returns = cache["returns"]
-        mask = cache.get("_tradeable_mask") or cache.get("_liquidity_mask")
-        if mask is not None:
-            returns = returns.where(mask)
-        raw_ret = (positions.shift(1) * returns).sum(axis=1)
-        equity  = (1 + raw_ret).cumprod()
-        equity_ma = equity.rolling(lookback).mean()
-        scale = pd.Series(
-            np.where(equity > equity_ma, 1.0, defensive_scale),
-            index=equity.index,
-        )
-        return positions.mul(scale.shift(1), axis=0)
-    scaler.__name__ = f"equity_curve_regime_scale_{lookback}_{defensive_scale}"
-    return scaler
+`v0.py` should define `run_study() -> dict` and return `study.metrics_dict()`.
+
+```python
+import json
+
+from qstudy import Study
+
+from shared import N_LONG, N_SHORT, load_benchmark, load_universe, mean_reversion_signal
 
 
-# ── Study factory ─────────────────────────────────────────────────────────────
-
-def build_study(
-    *,
-    name,
-    factors_loader=load_baseline_factors,
-    signal_window=5,
-    signal_shift=1,
-    vol_window=5,
-    vol_quantile=0.6,
-    volume_window=30,
-    volume_quantile=0.8,
-    momentum_window=60,
-    momentum_quantile=0.7,
-    liquidity_top_n=250,
-    liquidity_window=60,
-    extra_filters=None,
-    rebalance_every=1,
-    risk_scalers=None,
-):
-    def mr_signal(**cache):
-        sig = -cache["residual_returns"].rolling(signal_window).mean()
-        if signal_shift:
-            sig = sig.shift(signal_shift)
-        return sig
+def run_study() -> dict:
+    universe = load_universe()
+    benchmark = load_benchmark()
 
     study = (
-        Study(
-            universe=load_universe(),
-            benchmark=load_benchmark(),
-            factors=factors_loader(),
-            name=name,
-        )
-        .residualize_returns()
-        .base_signal(mr_signal)
-        .transform_signal(demean_signal)
-        .add_vol_filter(vol_window=vol_window, quantile=vol_quantile)
-        .add_volume_zscore_filter(window=volume_window, min_zscore_quantile=volume_quantile)
-        .add_momentum_context_filter(window=momentum_window, max_abs_quantile=momentum_quantile)
+        Study(universe=universe, benchmark=benchmark, name="v0")
+        .base_signal(mean_reversion_signal(window=5))
+        .build_long_short(n_long=N_LONG, n_short=N_SHORT)
+        .run()
     )
-
-    for fn in extra_filters or []:
-        study = study.add_filter(fn)
-
-    study = study.add_tradeable_constraint(
-        qs.liquidity(top_n=liquidity_top_n, window=liquidity_window)
-    )
-    study = study.build_positions(proportional_positions).rebalance(every=rebalance_every)
-
-    for fn in risk_scalers or []:
-        study = study.scale_risk(fn)
-
-    return study.run()
+    return study.metrics_dict()
 
 
-def baseline_study(name="baseline"):
-    return build_study(name=name, risk_scalers=[equity_curve_regime_scale()])
-
-
-# ── Output helper ─────────────────────────────────────────────────────────────
-
-def emit_metrics(study):
-    print(json.dumps(study.metrics_dict(), default=str, sort_keys=True))
+if __name__ == "__main__":
+    print(json.dumps(run_study(), default=str, indent=2, sort_keys=True))
 ```
 
-### `v0.py` — baseline (fully inline)
+### `v1.py`–`vN.py`
 
-v0 should be entirely self-contained — no imports from `common.py`. Write all signal, filter, and scaler logic inline so the baseline is readable without any shared context.
+Each iteration should define `run_study() -> dict`. Import shared helpers from `shared.py`, change one axis at a time, and return metrics for aggregation by `run.py`.
 
 ```python
-"""Baseline study — all logic explicit, no imports from common."""
 import json
-import numpy as np
-import pandas as pd
+
 import qstudy as qs
 from qstudy import Study
-from qstudy.constants import SP500
 
-START_DATE, END_DATE = "2015-01-01", "2023-12-31"
+from shared import N_LONG, N_SHORT, load_benchmark, load_universe, mean_reversion_signal
 
-universe  = qs.download(SP500,           START_DATE, END_DATE)
-factors   = qs.download(["SPY", "XLK"], START_DATE, END_DATE)
-benchmark = qs.download("SPY",           START_DATE, END_DATE)
 
-def demean_signal(signal, **cache):
-    return signal.sub(signal.mean(axis=1), axis=0)
+def run_study() -> dict:
+    universe = load_universe()
+    benchmark = load_benchmark()
 
-def proportional_positions(signal, **cache):
-    z = signal.sub(signal.mean(axis=1), axis=0)
-    z = z.div(z.std(axis=1), axis=0).clip(-3, 3)
-    z = z.sub(z.mean(axis=1), axis=0)
-    return z.div(z.abs().sum(axis=1).replace(0.0, np.nan), axis=0)
+    study = (
+        Study(universe=universe, benchmark=benchmark, name="v1")
+        .base_signal(mean_reversion_signal(window=10))
+        .add_tradeable_constraint(qs.liquidity(top_n=250, window=60))
+        .build_long_short(n_long=N_LONG, n_short=N_SHORT)
+        .run()
+    )
+    return study.metrics_dict()
 
-def equity_curve_regime_scale(positions, **cache):
-    returns = cache["returns"]
-    mask = cache.get("_liquidity_mask")
-    if mask is not None:
-        returns = returns.where(mask)
-    raw_ret = (positions.shift(1) * returns).sum(axis=1)
-    equity  = (1 + raw_ret).cumprod()
-    scale   = pd.Series(np.where(equity > equity.rolling(20).mean(), 1.0, 0.25), index=equity.index)
-    return positions.mul(scale.shift(1), axis=0)
-
-def mr_signal(**cache):
-    return -cache["residual_returns"].rolling(5).mean().shift(1)
-
-study = (
-    Study(universe=universe, benchmark=benchmark, factors=factors, name="v0_baseline")
-    .residualize_returns()
-    .base_signal(mr_signal)
-    .transform_signal(demean_signal)
-    .add_vol_filter(vol_window=5, quantile=0.6)
-    .add_volume_zscore_filter(window=30, min_zscore_quantile=0.8)
-    .add_momentum_context_filter(window=60, max_abs_quantile=0.7)
-    .add_tradeable_constraint(qs.liquidity(top_n=250, window=60))
-    .build_positions(proportional_positions)
-    .rebalance(every=1)
-    .scale_risk(equity_curve_regime_scale)
-    .run()
-)
 
 if __name__ == "__main__":
-    print(json.dumps(study.metrics_dict(), default=str, sort_keys=True))
+    print(json.dumps(run_study(), default=str, indent=2, sort_keys=True))
 ```
 
-### `v1.py`–`vN.py` — iteration scripts
+### `run.py`
 
-Each iteration imports from `common` and calls `build_study()` with exactly the parameters that differ from the baseline. Change **one axis per version** so the effect is interpretable.
+`run.py` is generated by the CLI and should usually be left alone. It discovers top-level `v*.py` files, sorts them by version number, imports each module, calls `run_study()`, and writes `results.json` plus `results.csv`.
 
-```python
-"""v1 — <one-line description of the change>."""
-from common import build_study, emit_metrics, equity_curve_regime_scale
+Run with:
 
-study = build_study(
-    name="v1_<change_label>",
-    # override exactly the parameters that differ from baseline:
-    risk_scalers=[equity_curve_regime_scale()],
-)
-
-if __name__ == "__main__":
-    emit_metrics(study)
+```bash
+python run.py
 ```
 
-### `run_all.py`
+### `log.md`
 
-See [`examples/run_all.py`](examples/run_all.py) for the full template. Copy it into your experiment directory and adjust the version range to match your last version number.
-
-Run with: `uv run python experiments/<study-name>/run_all.py`
-
-### `LOG.md`
-
-See [`examples/LOG.md`](examples/LOG.md) for a real example log from a momentum experiment. The expected structure per version is:
+Record the per-version rationale and outcome. A simple structure is:
 
 ```
 ### `vN`
@@ -436,9 +357,10 @@ End with a `## Summary` section noting what worked, what didn't, and the final r
 ## Key Rules
 
 - **NaN = excluded, 0 = signal.** In filters, use `signal.where(mask)` to NaN-out ineligible assets. Never set signal to 0 — zero is a valid signal value that will be ranked and potentially traded.
-- **Liquidity filter last** among signal filters — it NaN-outs everything outside the liquid universe, so filters applied after operate on a smaller set.
+- **Use the CLI layout first.** Start with `qstudy create`, edit the generated files, run `python run.py`, inspect with `qstudy show-results`.
+- **One version = one `run_study()` module.** Each `vN.py` should be independently runnable through the generated `run.py`.
 - **1-day execution lag** is baked into `engine.run()` via `positions.shift(1)`. Do not shift signals manually.
-- **Download once, reuse** — `qs.download()` hits yfinance. Do it once per session and pass `StudyData` objects to `Study`.
+- **Download once, reuse** — `qs.download()` hits yfinance. Put shared loaders in `shared.py` and reuse across `vN.py` files.
 - **residualize_returns() requires** either `factors=` or `benchmark=` in the `Study` constructor.
 
 ---
