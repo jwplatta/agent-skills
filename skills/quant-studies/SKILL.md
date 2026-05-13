@@ -231,104 +231,13 @@ Use the CLI-generated structure whenever you are running a systematic, multi-ver
 
 `shared.py` should hold everything every version script reuses: data loaders, constants, and helper signal/filter/scaler functions.
 
-```python
-from functools import cache
-
-import numpy as np
-import pandas as pd
-
-import qstudy as qs
-from qstudy import Study
-from qstudy.constants import SP500
-
-START_DATE = "2015-01-01"
-END_DATE = "2023-12-31"
-BENCHMARK_TICKER = "SPY"
-N_LONG = 25
-N_SHORT = 25
-
-
-@cache
-def load_universe():
-    return qs.download(SP500, START_DATE, END_DATE)
-
-@cache
-def load_benchmark():
-    return qs.download([BENCHMARK_TICKER], START_DATE, END_DATE)
-
-@cache
-def load_baseline_factors():
-    return qs.download(["SPY", "XLK"], START_DATE, END_DATE)
-
-
-def mean_reversion_signal(window=5):
-    def signal(**cache):
-        returns = cache["_active_returns"]
-        return -returns.rolling(window).mean()
-
-    signal.__name__ = f"mean_reversion_signal_{window}"
-    return signal
-```
-
 ### `v0.py`
 
 `v0.py` should define `run_study() -> dict` and return `study.metrics_dict()`.
 
-```python
-import json
-
-from qstudy import Study
-
-from shared import N_LONG, N_SHORT, load_benchmark, load_universe, mean_reversion_signal
-
-
-def run_study() -> dict:
-    universe = load_universe()
-    benchmark = load_benchmark()
-
-    study = (
-        Study(universe=universe, benchmark=benchmark, name="v0")
-        .base_signal(mean_reversion_signal(window=5))
-        .build_long_short(n_long=N_LONG, n_short=N_SHORT)
-        .run()
-    )
-    return study.metrics_dict()
-
-
-if __name__ == "__main__":
-    print(json.dumps(run_study(), default=str, indent=2, sort_keys=True))
-```
-
 ### `v1.py`–`vN.py`
 
 Each iteration should define `run_study() -> dict`. Import shared helpers from `shared.py`, change one axis at a time, and return metrics for aggregation by `run.py`.
-
-```python
-import json
-
-import qstudy as qs
-from qstudy import Study
-
-from shared import N_LONG, N_SHORT, load_benchmark, load_universe, mean_reversion_signal
-
-
-def run_study() -> dict:
-    universe = load_universe()
-    benchmark = load_benchmark()
-
-    study = (
-        Study(universe=universe, benchmark=benchmark, name="v1")
-        .base_signal(mean_reversion_signal(window=10))
-        .add_tradeable_constraint(qs.liquidity(top_n=250, window=60))
-        .build_long_short(n_long=N_LONG, n_short=N_SHORT)
-        .run()
-    )
-    return study.metrics_dict()
-
-
-if __name__ == "__main__":
-    print(json.dumps(run_study(), default=str, indent=2, sort_keys=True))
-```
 
 ### `run.py`
 
