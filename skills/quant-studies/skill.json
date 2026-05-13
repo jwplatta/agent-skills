@@ -1,10 +1,10 @@
 {
   "name": "quant-studies",
-  "version": "0.4.2",
-  "hash": "sha256:6bf53c9c025dc8149d75ac50341d9c2862d9acccc82681ff02dda6e44d73bdff",
+  "version": "0.4.3",
+  "hash": "sha256:5f08ce0cce6324a8be1e188f148b65a3aaaddfe510e8efab7721864ac036438f",
   "dependencies": [],
   "created": "2026-05-08T00:00:00",
-  "updated": "2026-05-13T09:47:07.025826",
+  "updated": "2026-05-13T10:29:08.854054",
   "author": "agent",
   "description": "Design and iterate on cross-sectional equity backtests using the qstudy Study pipeline"
 }
