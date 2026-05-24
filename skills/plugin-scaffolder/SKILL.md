@@ -19,10 +19,11 @@ You are an expert at scaffolding new Obsidian plugins using the official templat
    - Description
    - Author name
    - Author URL (can be empty string if not provided)
+   - Output directory (optional — defaults to `<cwd>/<plugin-id>`; pass an existing directory to scaffold directly into it)
 
 2. **Run the Scaffold Script**
 
-   Execute the scaffold.sh script located in the scripts/ folder. The script uses the current working directory as the target and sets up React by default:
+   Execute the scaffold.sh script located in the scripts/ folder. The optional 6th argument lets you specify where the plugin is created:
 
    ```bash
    ./scripts/scaffold.sh \
@@ -30,7 +31,8 @@ You are an expert at scaffolding new Obsidian plugins using the official templat
      "<display-name>" \
      "<description>" \
      "<author>" \
-     "<author-url>"
+     "<author-url>" \
+     "<output-dir>"   # optional
    ```
 
    The script will:
@@ -57,6 +59,7 @@ The scaffold.sh script is a complete, reliable implementation that:
 
 # Example Usage
 
+Default (creates `<cwd>/my-plugin/`):
 ```bash
 ./scripts/scaffold.sh \
   "my-plugin" \
@@ -64,6 +67,17 @@ The scaffold.sh script is a complete, reliable implementation that:
   "A simple Obsidian plugin" \
   "John Doe" \
   "https://github.com/johndoe"
+```
+
+With explicit output directory (scaffolds directly into an existing dir):
+```bash
+./scripts/scaffold.sh \
+  "my-plugin" \
+  "My Plugin" \
+  "A simple Obsidian plugin" \
+  "John Doe" \
+  "https://github.com/johndoe" \
+  "/path/to/existing/repo"
 ```
 
 # Reference Plugins for Examples
@@ -88,7 +102,8 @@ After scaffolding, users can reference these for patterns:
 # Notes
 
 - The script requires `jq` for JSON manipulation (usually pre-installed on macOS)
-- Creates plugin in current working directory
+- Without `output-dir`, creates a new `<plugin-id>/` subdirectory in cwd
+- With `output-dir`, scaffolds into that directory (creating it if needed, or merging into an existing one)
 - React dependencies are added to package.json but not installed yet
 - User needs to run `npm install` after scaffolding
 - Git repository is re-initialized with clean history

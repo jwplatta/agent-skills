@@ -1,7 +1,16 @@
 #!/bin/bash
 
 # Obsidian Plugin Scaffolder Script
-# Usage: scaffold.sh <plugin-id> <display-name> <description> <author> <author-url>
+# Usage: scaffold.sh <plugin-id> <display-name> <description> <author> <author-url> [output-dir]
+#
+# Arguments:
+#   plugin-id     Kebab-case plugin identifier
+#   display-name  Human-readable plugin name
+#   description   Short description of the plugin
+#   author        Author name
+#   author-url    Author URL (can be empty string)
+#   output-dir    (Optional) Directory to create the plugin in. Defaults to <cwd>/<plugin-id>
+#                 Pass an existing directory to scaffold directly into it (files cloned there).
 
 set -e  # Exit on error
 
@@ -10,20 +19,33 @@ DISPLAY_NAME="$2"
 DESCRIPTION="$3"
 AUTHOR="$4"
 AUTHOR_URL="$5"
+OUTPUT_DIR="$6"
 
 if [ -z "$PLUGIN_ID" ] || [ -z "$DISPLAY_NAME" ] || [ -z "$DESCRIPTION" ] || [ -z "$AUTHOR" ]; then
-  echo "Usage: scaffold.sh <plugin-id> <display-name> <description> <author> <author-url>"
+  echo "Usage: scaffold.sh <plugin-id> <display-name> <description> <author> <author-url> [output-dir]"
   exit 1
 fi
 
-PLUGIN_PATH="$(pwd)/$PLUGIN_ID"
+if [ -n "$OUTPUT_DIR" ]; then
+  PLUGIN_PATH="$(realpath "$OUTPUT_DIR")"
+else
+  PLUGIN_PATH="$(pwd)/$PLUGIN_ID"
+fi
 
 echo "Creating Obsidian plugin: $DISPLAY_NAME"
 echo "Location: $PLUGIN_PATH"
 
 # Clone the official template
 echo "Cloning official template..."
-git clone https://github.com/obsidianmd/obsidian-sample-plugin.git "$PLUGIN_PATH"
+if [ -d "$PLUGIN_PATH" ]; then
+  # Target directory exists — clone to a temp dir and move contents in
+  TEMP_DIR="$(mktemp -d)"
+  git clone https://github.com/obsidianmd/obsidian-sample-plugin.git "$TEMP_DIR/template"
+  cp -a "$TEMP_DIR/template/." "$PLUGIN_PATH/"
+  rm -rf "$TEMP_DIR"
+else
+  git clone https://github.com/obsidianmd/obsidian-sample-plugin.git "$PLUGIN_PATH"
+fi
 cd "$PLUGIN_PATH"
 
 # Remove existing git history and initialize fresh
@@ -94,7 +116,7 @@ echo ""
 echo "Location: $PLUGIN_PATH"
 echo ""
 echo "Next steps:"
-echo "  1. cd $PLUGIN_ID"
+echo "  1. cd $PLUGIN_PATH"
 echo "  2. npm install"
 echo "  3. npm run dev"
 echo ""
