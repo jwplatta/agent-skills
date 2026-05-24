@@ -1,25 +1,37 @@
 # Resume Editor Rules
 
+## WSQ is the primary authority
+
+All structural and stylistic decisions follow the WallStreetQuants guidelines in `Notes/resume/WallStreetQuants Resume Writing Notes.md`. When in doubt, defer to WSQ — not general resume advice, not other vault notes.
+
 ## Always read vault source files first
 
-Read the required source notes (SKILL.md Step 1) before generating any draft. Never write a resume from memory alone.
-
-## Never invent metrics
-
-Only use numbers and quantified achievements that appear in the vault's notes. If a metric isn't there, describe the impact qualitatively.
+Read the required source notes (SKILL.md Step 1) before generating any draft. Never write from memory alone.
 
 ## Always ask before drafting
 
-Ask for target role and any context (Step 2) before producing a draft. Do not silently assume the role.
+Ask for target role and context (SKILL.md Step 2) before producing any draft. Do not silently assume the role.
 
-## 1-page constraint
+## 1-page constraint — hard limit
 
-Keep the draft to 1-page equivalent. If content exceeds this, cut lower-priority items — do not shrink formatting or suggest "reduce font size".
+Keep the draft to 1-page equivalent. Cut lower-priority content to fit. Do not suggest formatting tricks (smaller font, tighter margins) as the solution — cut content instead.
+
+## Never invent metrics
+
+Only use numbers and quantified achievements that appear in the vault's notes. Describe impact qualitatively if a metric isn't there.
+
+## Experience framing follows WSQ precedence
+
+Quant > Applied Math Research > Data Science/ML > Software Engineering > Everything else. Reframe titles as WSQ specifies. Explain unfamiliar firms.
+
+## Quant Projects: 1–3 only
+
+Never include more than 3 projects. Each must lead with strategy type, asset class, performance, and holding period.
 
 ## No extra sections
 
-Do not add sections (e.g. Objective, References, Certifications) that are not in the target role's standard format as defined in the vault notes.
+Do not add sections (Objective, References, Certifications, etc.) not called for by the WSQ format for the target role.
 
 ## Targeted edits on revision
 
-When the user requests changes, make targeted edits. Do not regenerate the full resume unless explicitly asked.
+Make targeted edits when the user requests changes. Do not regenerate the full resume unless explicitly asked.
