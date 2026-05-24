@@ -1,0 +1,10 @@
+{
+  "name": "resume-editor",
+  "version": "0.2.0",
+  "hash": "sha256:47d4c5f092a791fb9371cc67449ee2839fe3089ff460a7d2270ac8855a6dad7e",
+  "dependencies": [],
+  "created": "2026-05-23T00:00:00",
+  "updated": "2026-05-23T22:50:17.011598",
+  "author": "agent",
+  "description": "Quickly write tailored resume versions for Joseph Platta using vault source material"
+}
