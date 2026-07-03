@@ -1,0 +1,10 @@
+{
+  "name": "explain-diff",
+  "version": "0.1.0",
+  "hash": "sha256:71faa02de63a1851d1ca65df500d79dffd2bb4ad9cab1d570e9288db2e0af14f",
+  "dependencies": [],
+  "created": "2026-07-03T10:35:23.962195",
+  "updated": "2026-07-03T10:35:23.967481",
+  "author": "agent",
+  "description": "explain-diff skill"
+}

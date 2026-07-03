@@ -1,0 +1,4 @@
+interface:
+  display_name: "Explain Diff"
+  short_description: "Explain current git diffs clearly."
+  default_prompt: "Use $explain-diff to explain the current git diff with background, intuition, key changes, and a short quiz."
