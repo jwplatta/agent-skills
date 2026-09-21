@@ -5,7 +5,7 @@ description: Create, search, and manage project backlog items across any project
 
 # Project Backlog Skill
 
-Manage a file-based project backlog using markdown files with YAML frontmatter. Each backlog item is a single `.md` file in the project's `backlog/` folder.
+Manage a file-based project backlog using markdown files with YAML frontmatter. Each backlog item is a single `.md` file in the project's `docs/backlog/` folder.
 
 ## When to Activate
 
@@ -16,7 +16,7 @@ Manage a file-based project backlog using markdown files with YAML frontmatter. 
 
 ## Backlog Item Format
 
-Each backlog item is a markdown file in `docs/backlog/`. Use `docs/backlog/template.md` as the starting point. Name the file descriptively using snake_case, e.g. `add_s3_upload_command.md` or `fix_tracker_nil_crash.md`.
+Each backlog item is a markdown file in `docs/backlog/`. The canonical template lives in this skill at `template.md` (same directory as this `SKILL.md`). Copy it to create a new item. Name the file descriptively using snake_case, e.g. `add_s3_upload_command.md` or `fix_tracker_nil_crash.md`.
 
 **Frontmatter fields:**
 
@@ -37,58 +37,60 @@ source: claude/tickrake  # agent-name/project-name that wrote the item
 
 ## Creating a Backlog Item
 
-1. Copy `docs/backlog/template.md` to a new descriptively named file in `docs/backlog/`.
+1. Copy the template from this skill's directory (e.g. `.claude/skills/project-backlog/template.md`) to a new descriptively named file in `docs/backlog/`.
 2. Fill in all frontmatter fields. Use today's date. Set `source` to `claude/<project>` (or the agent writing it).
 3. Write a clear Summary, Requirements, and Dependencies & Resources section.
 4. Do not leave the file as a stub — complete the content before saving.
 
 ## Searching the Backlog
 
-Use the scripts in this skill to query backlog items. All scripts accept a `--dir` flag defaulting to `docs/backlog`.
+Use `scripts/search.py` to query backlog items. All invocations accept a `--dir` flag defaulting to `docs/backlog`.
 
-### List by priority
+For Claude:
+
+```bash
+python3 .claude/skills/project-backlog/scripts/search.py --priority high
+```
+
+For Codex:
 
 ```bash
 python3 .codex/skills/project-backlog/scripts/search.py --priority high
-python3 .codex/skills/project-backlog/scripts/search.py --priority critical --status not-started
 ```
 
-### List by type
+### Filter options
 
 ```bash
-python3 .codex/skills/project-backlog/scripts/search.py --type bug
-python3 .codex/skills/project-backlog/scripts/search.py --type feature --status in-progress
+# By type
+--type bug|feature|chore|documentation
+
+# By status
+--status not-started|in-progress|complete|blocked
+
+# By priority
+--priority low|medium|high|critical
+
+# By tag (project view)
+--tag <tag>
+
+# Fuzzy match on title or description
+--query "upload artifact"
+
+# Show full file body in results
+--full
 ```
 
-### List by tag (project view)
+### Examples
 
 ```bash
-python3 .codex/skills/project-backlog/scripts/search.py --tag s3-archive
-```
+# Highest priority open items
+python3 .claude/skills/project-backlog/scripts/search.py --status not-started --priority high
 
-### List by status
+# All bugs
+python3 .claude/skills/project-backlog/scripts/search.py --type bug
 
-```bash
-python3 .codex/skills/project-backlog/scripts/search.py --status blocked
-python3 .codex/skills/project-backlog/scripts/search.py --status not-started
-```
-
-### Fuzzy search on title or description
-
-```bash
-python3 .codex/skills/project-backlog/scripts/search.py --query "upload artifact"
-```
-
-### Combined filters
-
-```bash
-python3 .codex/skills/project-backlog/scripts/search.py --type bug --status not-started --priority high
-```
-
-### Full output (show body, not just frontmatter summary)
-
-```bash
-python3 .codex/skills/project-backlog/scripts/search.py --tag s3-archive --full
+# All items in a project group
+python3 .claude/skills/project-backlog/scripts/search.py --tag s3-archive --full
 ```
 
 ## Output Format
