@@ -3,7 +3,7 @@ type: feature|bug|chore|documentation
 tags: []
 title:
 description:
-date:
+created:
 updated:
 status: not-started
 priority: medium
