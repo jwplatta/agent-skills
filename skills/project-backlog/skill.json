@@ -1,0 +1,10 @@
+{
+  "name": "project-backlog",
+  "version": "0.1.1",
+  "hash": "sha256:34c2598573fa63e432dca7ac8af6a365bbe793c53dc8cfa7b936ce78a5d1582e",
+  "dependencies": [],
+  "created": "2026-09-21T00:00:00",
+  "updated": "2026-09-21T10:51:14.347343",
+  "author": "agent",
+  "description": "Create, search, and manage project backlog items across any project"
+}
