@@ -1,10 +1,10 @@
 {
   "name": "quant-platform",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "hash": "sha256:cea9ee671545859d09c843942c7987aba6b7a052ee6cb59fd4eb14edfc275e69",
   "dependencies": [],
   "created": "2026-09-21T12:46:25.930792",
-  "updated": "2026-09-21T12:46:25.935197",
+  "updated": "2026-09-21T14:24:45.695368",
   "author": "agent",
   "description": "quant-platform skill"
 }
