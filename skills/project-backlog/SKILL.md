@@ -27,6 +27,7 @@ tags: [s3, upload]   # free-form; use tags to group related items into a project
 title: Add S3 upload command
 description: One-line summary shown in search results
 date: 2026-09-21     # ISO date the item was created
+updated: 2026-09-21  # ISO date the item was last modified — update whenever frontmatter or body changes
 status: not-started  # not-started | in-progress | complete | blocked
 priority: high       # low | medium | high | critical
 source: claude/tickrake  # agent-name/project-name that wrote the item
