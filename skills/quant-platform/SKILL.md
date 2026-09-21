@@ -15,9 +15,10 @@ platform context changes the implementation or deployment decision.
 
 `quant-infra` is the runtime and integration entry point. Tickrake ingests and
 publishes market data; research consumers read published outputs rather than
-Tickrake internals. Keep application code, runtime wiring, and consumer code
-in their owning repositories. Do not turn a local deployment detail into a
-producer or consumer contract.
+Tickrake internals. `schwab_rb` owns the shared Schwab API and streaming-client
+library used by Tickrake. Keep application code, runtime wiring, and consumer
+code in their owning repositories. Do not turn a local deployment detail into
+a producer or consumer contract.
 
 The current repository map is in [references/platform-map.md](references/platform-map.md).
 It is a discovery guide, not a complete inventory or an immutable source of
@@ -46,6 +47,8 @@ Before making a cross-platform claim or changing another repository:
   runbooks.
 - **Tickrake:** data collection, scheduling, raw-event handling, storage,
   publication contracts, and producer-side recovery behavior.
+- **schwab_rb:** Schwab authentication, REST access, and the shared streaming
+  client; library behavior and reconnect semantics used by Tickrake.
 - **Tractatus:** research-facing configuration, data discovery/downloads, and
   consumer access to published Tickrake outputs.
 - **Options Monitor:** user-facing intraday monitoring and consumption of

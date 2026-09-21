@@ -7,6 +7,7 @@ current component documentation before relying on any entry.
 | --- | --- | --- | --- | --- |
 | quant-infra | `/Users/jplatta/repos/quant-infra` | `https://github.com/jwplatta/quant-infra` | Docker runtime, Compose profiles, monitoring, environment wiring | `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, `CHANGELOG.md`, `Makefile`, `services/`, `deploy/` |
 | Tickrake | `/Users/jplatta/repos/tickrake` | `https://github.com/jwplatta/tickrake` | Market-data ingestion, scheduling, storage, publication contracts | `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, `CHANGELOG.md`, `lib/`, `spec/`, config and job definitions |
+| schwab_rb | `/Users/jplatta/repos/schwab_rb` | `https://github.com/jwplatta/schwab_rb` | Schwab authentication, REST API, and streaming-client library behavior | `README.md`, `AGENTS.md`, `CHANGELOG.md`, `lib/`, `spec/`, gem configuration |
 | Tractatus | `/Users/jplatta/repos/tractatus` | `https://github.com/jwplatta/tractatus` | Research-facing configuration and access to published data | `README.md`, `CONTRIBUTING.md`, `CHANGELOG.md`, `src/` or package modules, tests |
 | Options Monitor | `/Users/jplatta/repos/options-monitor` | `https://github.com/jwplatta/options-monitor` | User-facing intraday dashboard and consumer behavior | `README.md`, `CONTRIBUTING.md`, `CHANGELOG.md`, application source, tests |
 
