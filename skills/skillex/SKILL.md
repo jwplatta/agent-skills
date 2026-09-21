@@ -55,49 +55,6 @@ skillex init codex
 skillex init gemini
 ```
 
-## Creating a New Skill
-
-To author a brand-new skill and publish it to the central repository:
-
-1. Create a directory for the skill under the agent's local skills directory:
-
-```bash
-mkdir -p .claude/skills/<skill-name>/scripts
-```
-
-2. Write `SKILL.md` — the only required file. Include a frontmatter block, usage instructions, and any script documentation:
-
-```markdown
----
-name: <skill-name>
-description: One-line description
----
-
-# Skill Title
-...
-```
-
-3. Add any supporting scripts (Python, shell, etc.) under `scripts/`.
-
-4. **Do NOT create `skill.json` manually.** Skillex generates it automatically on first push.
-
-5. Push to publish the skill:
-
-```bash
-skillex push <skill-name> \
-  --agent claude \
-  --type feat \
-  --summary "initial skill"
-```
-
-Skillex will auto-generate `skill.json` with `hash`, `created`, `updated`, and version `0.1.0`.
-
-6. Pull into other agents or projects:
-
-```bash
-skillex pull <skill-name> --agent codex
-```
-
 ## Recommended Workflow
 
 1. Pull before editing:
